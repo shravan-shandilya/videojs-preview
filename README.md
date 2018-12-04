@@ -61,4 +61,3 @@ MIT. Copyright (c) Shravan Shandilya &lt;s.shravan95@gmail.com&gt;
 
 
 [videojs]: http://videojs.com/
-# videojs-preview
