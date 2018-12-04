@@ -1,18 +1,22 @@
-import videojs from 'video.js';
-import {version as VERSION} from '../package.json';
+import videojs from "video.js";
+import { version as VERSION } from "../package.json";
 
-const Plugin = videojs.getPlugin('plugin');
+const Plugin = videojs.getPlugin("plugin");
 
 // Default options for the plugin.
-const defaults = {};
+const defaults = {
+  previewEnd: 120,
+  previewEndBanner:
+    "https://res.cloudinary.com/keyport/image/upload/v1543908800/preview_ended_poster.jpg"
+};
 
+var preview = {};
 /**
  * An advanced Video.js plugin. For more information on the API
  *
  * See: https://blog.videojs.com/feature-spotlight-advanced-plugins/
  */
 class Preview extends Plugin {
-
   /**
    * Create a Preview plugin instance.
    *
@@ -31,20 +35,27 @@ class Preview extends Plugin {
     super(player);
 
     this.options = videojs.mergeOptions(defaults, options);
+    preview = this.options;
 
     this.player.ready(() => {
-      this.player.addClass('vjs-preview');
+      this.player.on("timeupdate", this.onTimeUpdate);
     });
   }
-}
 
-// Define default values for the plugin's `state` object here.
-Preview.defaultState = {};
+  onTimeUpdate() {
+    if (this.currentTime() > preview.previewEnd) {
+      this.reset();
+      this.poster(preview.previewEndBanner);
+      this.exitFullscreen();
+      this.bigPlayButton.hide();
+    }
+  }
+}
 
 // Include the version number.
 Preview.VERSION = VERSION;
 
 // Register the plugin with video.js.
-videojs.registerPlugin('preview', Preview);
+videojs.registerPlugin("preview", Preview);
 
 export default Preview;
