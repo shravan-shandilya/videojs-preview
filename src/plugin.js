@@ -1,13 +1,14 @@
 import videojs from "video.js";
-import { version as VERSION } from "../package.json";
+import {
+  version as VERSION
+} from "../package.json";
 
 const Plugin = videojs.getPlugin("plugin");
 
 // Default options for the plugin.
 const defaults = {
   previewEnd: 120,
-  previewEndBanner:
-    "https://res.cloudinary.com/keyport/image/upload/v1543908800/preview_ended_poster.jpg"
+  previewEndBanner: "https://res.cloudinary.com/keyport/image/upload/v1543908800/preview_ended_poster.jpg"
 };
 
 var preview = {};
@@ -43,6 +44,11 @@ class Preview extends Plugin {
   }
 
   onTimeUpdate() {
+    if (this.currentTime() > (preview.previewEnd - 4)) {
+      let volume = this.volume();
+      volume = volume - ((volume * 25) / 100);
+      this.volume(volume);
+    }
     if (this.currentTime() > preview.previewEnd) {
       this.reset();
       this.poster(preview.previewEndBanner);
